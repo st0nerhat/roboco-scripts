@@ -4,7 +4,7 @@ from color import Color
 from math import sin, tau, pow
 
 class Blink(IUpdateable):
-    def __init__(self, led:LED, period=5, punchiness=4):
+    def __init__(self, led:LED, period=2, punchiness=4):
         self.led = led
         self.period = period
         self.time = 0

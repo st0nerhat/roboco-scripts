@@ -1,4 +1,7 @@
 from controllables import DCMotor, Piston, TextScreen, LED
+import importlib
+import framework.blink
+importlib.reload(framework.blink)
 from framework.blink import Blink
 
 lfWheel = DCMotor(0)
