@@ -19,7 +19,7 @@ def main():
     loop.add(leftLed)
     loop.add(rightLed)
    
-    drive.forwardLeft(1)
+    drive.forwardLeft(5)
 
     while True:
         loop.update()
