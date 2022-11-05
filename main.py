@@ -18,6 +18,8 @@ def main():
     loop = UpdateLoop(0.033, 0.015)
     loop.add(leftLed)
     loop.add(rightLed)
+   
+    drive.forwardLeft(1)
 
     while True:
         loop.update()
