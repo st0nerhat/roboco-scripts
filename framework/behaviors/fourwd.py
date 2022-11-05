@@ -3,9 +3,8 @@ import importlib
 import framework.behaviors.wheel
 importlib.reload(framework.behaviors.wheel)
 from framework.behaviors.wheel import Wheel
-from framework.core import IFixedUpdateable
 
-class FourWD(IFixedUpdateable):
+class FourWD:
     lfWheel: Wheel
     rfWheel: Wheel
     lrWheel: Wheel
