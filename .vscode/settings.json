@@ -1,0 +1,9 @@
+{
+    "python.autoComplete.extraPaths": [
+        "*I:\\Program Files (x86)\\Steam\\steamapps\\common\\RoboCo\\RoboCo_Data\\StreamingAssets\\Robocode\\python\\Lib"
+    ],
+    "python.analysis.extraPaths": [
+        "I:\\Program Files (x86)\\Steam\\steamapps\\common\\RoboCo\\RoboCo_Data\\StreamingAssets\\Robocode\\python\\Lib"
+    ],
+    "python.defaultInterpreterPath": "C:\\Users\\ajstone\\AppData\\LocalLow\\Filament Games\\RoboCo\\python\\interpreter-ModifyWithCare\\python-3.9.6-embed-amd64",
+}
