@@ -1,7 +1,9 @@
 from controllables import LED
-from framework.loop import loop, IUpdateable
+from framework.core.loop import IUpdateable
 from color import Color
 from math import sin, tau, pow
+
+from framework.core.time import TimeStep
 
 class Blink(IUpdateable):
     def __init__(self, led:LED, period=2, punchiness=4):
@@ -9,11 +11,10 @@ class Blink(IUpdateable):
         self.period = period
         self.time = 0
         self.punchiness = punchiness
-        loop.add(self)
 
-    def update(self, dt:float):
+    def update(self, dt:TimeStep):
         #sample a sin wave with period pulse_length
-        intensity = sin(loop.elapsedTime * tau / self.period)
+        intensity = sin(dt.elapsed * tau / self.period)
 
         #put it between 0 and 1
         intensity = (1 + intensity) / 2.

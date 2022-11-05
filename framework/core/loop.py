@@ -1,36 +1,40 @@
 from typing import List
 from time import monotonic, sleep
 
+from framework.core.time import TimeStep
 
 class IUpdateable:
     def __init__(self):
         pass
 
-    def update(self, dt:float):
+    def update(self, dt:TimeStep):
         raise Exception("Not implemented")
 
 class IFixedUpdateable:
     def __init__(self):
         pass
 
-    def updateFixed(self, dt:float):
+    def updateFixed(self, dt:TimeStep):
         raise Exception("Not implemented")
 
 class UpdateLoop:
     updateList: List[IUpdateable]
     fixedUpdateList: List[IFixedUpdateable]
     startTime: float
-    elapsedTime: float
     lastTime: float
+    lastTimeStep: TimeStep
+    lastFixedTimeStep: TimeStep
     fixedUpdateRemainder: float
+    targetTimeStep: float
 
     def __init__(self, targetTimeStep:float, fixedTimeStep:float):
         self.targetTimeStep = targetTimeStep
-        self.fixedTimeStep = fixedTimeStep
+        self.lastFixedTimeStep = TimeStep()
+        self.lastFixedTimeStep.dt = fixedTimeStep
         self.updateList = []
         self.fixedUpdateList = []
         self.startTime = self.lastTime = monotonic()
-        self.elapsedTime = 0
+        self.lastTimeStep = TimeStep()
         self.fixedUpdateRemainder = 0
 
     def add(self, updateable:IUpdateable):
@@ -46,20 +50,18 @@ class UpdateLoop:
         raise Exception("Not implemented")
 
     def update(self):
-        print("update")
         start = monotonic()
-        dt = start - self.lastTime
-        self.elapsedTime += dt
+        self.lastTimeStep.update(start - self.lastTime)
         self.lastTime = start
 
         # Do regular update
         for updateable in self.updateList:
-            updateable.update(dt)
+            updateable.update(self.lastTimeStep)
 
         # Update fixed time steps
-        fixedUpdateTotalDt = dt + self.fixedUpdateRemainder
-        while fixedUpdateTotalDt >= self.fixedTimeStep:
-            fixedUpdateTotalDt -= self.fixedTimeStep
+        fixedUpdateTotalDt = self.lastTimeStep.dt + self.fixedUpdateRemainder
+        while fixedUpdateTotalDt >= self.lastFixedTimeStep.dt:
+            fixedUpdateTotalDt -= self.lastFixedTimeStep.dt
             self._fixedUpdate()
 
         self.fixedUpdateRemainder = fixedUpdateTotalDt
@@ -72,7 +74,6 @@ class UpdateLoop:
         sleep(sleepTime)
 
     def _fixedUpdate(self):
+        self.lastFixedTimeStep.update(self.lastFixedTimeStep.dt)
         for updateable in self.fixedUpdateList:
-            updateable.update(self.fixedTimeStep)
-        
-loop = UpdateLoop(0.033, 0.015)
+            updateable.updateFixed(self.lastFixedTimeStep)
