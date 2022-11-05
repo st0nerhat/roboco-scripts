@@ -12,7 +12,6 @@ class Wheel:
         self.motor.stop()
 
     def spin(self, linearVelocity:float):
-        print("spin")
         angularVelocity = linearVelocity / self.radius
         power = angularVelocity / self.motor.max_velocity
         self.motor.spin(power)
