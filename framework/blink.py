@@ -12,9 +12,8 @@ class Blink(IUpdateable):
         loop.add(self)
 
     def update(self, dt:float):
-        time += dt
         #sample a sin wave with period pulse_length
-        intensity = sin(time * tau / self.period)
+        intensity = sin(loop.elapsedTime * tau / self.period)
 
         #put it between 0 and 1
         intensity = (1 + intensity) / 2.
