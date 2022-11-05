@@ -1,9 +1,7 @@
 from controllables import LED
-from framework.core.loop import IUpdateable
+from framework.core import IUpdateable, TimeStep
 from color import Color
 from math import sin, tau, pow
-
-from framework.core.time import TimeStep
 
 class Blink(IUpdateable):
     def __init__(self, led:LED, period=2, punchiness=4):

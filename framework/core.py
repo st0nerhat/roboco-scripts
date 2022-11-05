@@ -1,7 +1,17 @@
 from typing import List
 from time import monotonic, sleep
 
-from framework.core.time import TimeStep
+class TimeStep:
+    elapsed: float
+    dt: float
+
+    def __init__(self):
+        self.elapsed = 0
+        self.dt = 0
+
+    def update(self, dt):
+        self.elapsed += dt
+        self.dt = dt
 
 class IUpdateable:
     def __init__(self):
@@ -16,6 +26,18 @@ class IFixedUpdateable:
 
     def updateFixed(self, dt:TimeStep):
         raise Exception("Not implemented")
+
+class TimeStep:
+    elapsed: float
+    dt: float
+
+    def __init__(self):
+        self.elapsed = 0
+        self.dt = 0
+
+    def update(self, dt):
+        self.elapsed += dt
+        self.dt = dt
 
 class UpdateLoop:
     updateList: List[IUpdateable]
