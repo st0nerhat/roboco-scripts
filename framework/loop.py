@@ -22,6 +22,7 @@ class UpdateLoop:
     startTime: float
     elapsedTime: float
     lastTime: float
+    fixedUpdateRemainder: float
 
     def __init__(self, targetTimeStep:float, fixedTimeStep:float):
         self.targetTimeStep = targetTimeStep
@@ -30,6 +31,7 @@ class UpdateLoop:
         self.fixedUpdateList = []
         self.startTime = self.lastTime = monotonic()
         self.elapsedTime = 0
+        self.fixedUpdateRemainder = 0
 
     def add(self, updateable:IUpdateable):
         self.updateList.append(updateable)
@@ -44,15 +46,23 @@ class UpdateLoop:
         raise Exception("Not implemented")
 
     def update(self):
+        print("update")
         start = monotonic()
         dt = start - self.lastTime
         self.elapsedTime += dt
         self.lastTime = start
 
+        # Do regular update
         for updateable in self.updateList:
             updateable.update(dt)
 
-        # TODO: Update fixed time steps
+        # Update fixed time steps
+        fixedUpdateTotalDt = dt + self.fixedUpdateRemainder
+        while fixedUpdateTotalDt >= self.fixedTimeStep:
+            fixedUpdateTotalDt -= self.fixedTimeStep
+            self._fixedUpdate()
+
+        self.fixedUpdateRemainder = fixedUpdateTotalDt
 
         end = monotonic()
         loopTime = end - start
@@ -61,5 +71,8 @@ class UpdateLoop:
         # Sleep until target time step
         sleep(sleepTime)
 
+    def _fixedUpdate(self):
+        for updateable in self.fixedUpdateList:
+            updateable.update(self.fixedTimeStep)
         
 loop = UpdateLoop(0.033, 0.015)
