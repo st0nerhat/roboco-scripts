@@ -1,5 +1,6 @@
 
 import sys
+import asyncio
 if (sys.path[len(sys.path)-1] != "C:\\Users\\ajstone\\Documents\\My Games\\Roboco\\st0nerhat\\Scripts"):
     sys.path.append("C:\\Users\\ajstone\\Documents\\My Games\\Roboco\\st0nerhat\\Scripts")
 import importlib
@@ -14,15 +15,15 @@ from local.input import *
 from local.output import *
 
 
-def main():
+async def main():
     loop = UpdateLoop(0.033, 0.015)
     loop.add(leftLed)
     loop.add(rightLed)
    
     drive.forwardLeft(5)
 
-    while True:
-        loop.update()
+    await loop.run()
 
-main()
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+asyncio.run(main())
 

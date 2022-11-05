@@ -1,5 +1,6 @@
 from typing import List
-from time import monotonic, sleep
+from time import monotonic
+from asyncio import sleep
 
 class TimeStep:
     elapsed: float
@@ -71,29 +72,30 @@ class UpdateLoop:
     def removeFixed(self, updateable:IFixedUpdateable):
         raise Exception("Not implemented")
 
-    def update(self):
-        start = monotonic()
-        self.lastTimeStep.update(start - self.lastTime)
-        self.lastTime = start
+    async def run(self):
+        while True:
+            start = monotonic()
+            self.lastTimeStep.update(start - self.lastTime)
+            self.lastTime = start
 
-        # Do regular update
-        for updateable in self.updateList:
-            updateable.update(self.lastTimeStep)
+            # Do regular update
+            for updateable in self.updateList:
+                updateable.update(self.lastTimeStep)
 
-        # Update fixed time steps
-        fixedUpdateTotalDt = self.lastTimeStep.dt + self.fixedUpdateRemainder
-        while fixedUpdateTotalDt >= self.lastFixedTimeStep.dt:
-            fixedUpdateTotalDt -= self.lastFixedTimeStep.dt
-            self._fixedUpdate()
+            # Update fixed time steps
+            fixedUpdateTotalDt = self.lastTimeStep.dt + self.fixedUpdateRemainder
+            while fixedUpdateTotalDt >= self.lastFixedTimeStep.dt:
+                fixedUpdateTotalDt -= self.lastFixedTimeStep.dt
+                self._fixedUpdate()
 
-        self.fixedUpdateRemainder = fixedUpdateTotalDt
+            self.fixedUpdateRemainder = fixedUpdateTotalDt
 
-        end = monotonic()
-        loopTime = end - start
-        sleepTime = self.targetTimeStep - loopTime
+            end = monotonic()
+            loopTime = end - start
+            sleepTime = self.targetTimeStep - loopTime
 
-        # Sleep until target time step
-        sleep(sleepTime)
+            # Sleep until target time step
+            await sleep(sleepTime)
 
     def _fixedUpdate(self):
         self.lastFixedTimeStep.update(self.lastFixedTimeStep.dt)
