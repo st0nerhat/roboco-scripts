@@ -1,5 +1,3 @@
-from scriptruntime import Runtime
-from sensors import InertialSensor
 from typing import List
 from time import monotonic, sleep
 
