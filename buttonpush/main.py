@@ -24,16 +24,28 @@ piston = Piston(3)
 
 async def main():
     stream = Mux(distance.stream(), button.force_stream())
-    piston.move(0.1)
+    screen.size = 80
+    screen.horizontal_alignment = TextScreen.HorizontalAlignment.LEFT
+    touchDist = float('-inf')
+    minDist = float('inf')
+    maxForce = float('-inf')
 
     while True:
         for event in stream:
             distanceVal = event[0]
-            forceVal = event[1]
-            if forceVal != None:
-                screen.text = "{:.2f} {:.2f}\n".format(distanceVal, forceVal)
-            else:
-                screen.text = "{:.2f} None".format(distanceVal, forceVal)
+            F = event[1]
+            x = 0
+            k = 0
+
+            if F is not None:
+                if F > 1:
+                    touchDist = max(touchDist, distanceVal)
+                    minDist = min(minDist, distanceVal)
+                    maxForce = max(F, maxForce)
+                    x = touchDist - distanceVal
+                    if x > 0:
+                        k = -F / x
+                screen.text = "F=-kx\nF: {:.2f}\nx: {:2f}\nk: {:2f}".format(F, x, k)
         await sleep(0.033)
 
 
