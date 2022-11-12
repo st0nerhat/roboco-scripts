@@ -24,10 +24,16 @@ piston = Piston(3)
 
 async def main():
     stream = Mux(distance.stream(), button.force_stream())
+    piston.move(0.1)
 
     while True:
         for event in stream:
-            print(event)
+            distanceVal = event[0]
+            forceVal = event[1]
+            if forceVal != None:
+                screen.text = "{:.2f} {:.2f}\n".format(distanceVal, forceVal)
+            else:
+                screen.text = "{:.2f} None".format(distanceVal, forceVal)
         await sleep(0.033)
 
 
